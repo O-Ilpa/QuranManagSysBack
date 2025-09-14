@@ -1,6 +1,6 @@
 import express from "express";
-import User from "../models/User.js";
-import bcrypt from "bcrypt";
+import Admins from "../models/admin.js";
+import * as bcrypt from "bcrypt";
 // import speakeasy from "speakeasy";
 // import nodemailer from "nodemailer";
 import verifyMiddleWare from "./verifyMiddleWare.js";
@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 const router = express.Router();
 
 // const sendCodeToEmail = (code, email) => {
-  
+
 //   var transporter = nodemailer.createTransport({
 //     service: "gmail",
 //     auth: {
@@ -47,21 +47,24 @@ const router = express.Router();
 // };
 router.get("/home", verifyMiddleWare, async (req, res) => {
   if (req.user == null) {
-    res.status(500)
+    res.status(500);
   }
-})
+});
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    console.log(password)
+    console.log(email)
+    const user = await Admins.findOne({ email });
+    console.log(user)
     if (!user) {
       return res.json({ message: "User doesn't Exist", success: false });
     }
-    const passIsTrue = await bcrypt.compare(password, user.password);
+    const passIsTrue = await bcrypt.compare(password, user.pass);
 
     if (passIsTrue) {
       const token = jwt.sign(
-        { id: user._id, role: user.role, name: user.name },
+        { id: user._id, name: user.name, email: user.email },
         process.env.TOKEN_SECRET
       );
       console.log("loged in");
@@ -80,15 +83,4 @@ router.post("/login", async (req, res) => {
     console.log(err);
   }
 });
-
-router.get("/verify", verifyMiddleWare, async (req, res) => {
-  return res.status(200).json({success: true, user: req.user})
-})
-
-setTimeout(async () => {
-  const unVerifiedUsers = await User.find({ verified: false });
-  unVerifiedUsers.forEach(async (user) => {
-    await user.deleteOne();
-  });
-}, 5 * 60 * 1000);
 export default router;

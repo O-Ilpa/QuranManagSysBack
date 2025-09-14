@@ -4,9 +4,12 @@ if (process.env.NODE_ENV !== "production") {
 }
 import express from "express";
 import authRouter from "./routers/auth.js";
+import studentsRouter from './routers/students.js'
 import mongoose from "mongoose";
+import groupsRouter from "./routers/groups.js"
+
+
 import cors from "cors";
-import propertyRouter from "./routers/properties.js";
 const app = express();
 
 app.use(express.json());
@@ -16,18 +19,19 @@ const allowedOrigins = [
 ];
 
 app.use(
-  cors({
-    origin: allowedOrigins,
+  cors({ 
+    origin: process.env.LOCAL_FRONT_ENDPOINT,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'ngrok-skip-browser-warning'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 app.use("/api/auth", authRouter);
-app.use("/api/properties", propertyRouter);
-
+app.use("/api/students", studentsRouter)
+app.use("/api/groups", groupsRouter)
 mongoose.connect(process.env.DATABASE_URL);
 const db =  mongoose.connection;
-db.on("error", (error) => console.error(error.name));
+db.on("error", (error) => console.error(error.name)); 
 db.once("open", () => console.log("connected to mongoose"));
 app.listen(process.env.PORT || 5000);
+  
