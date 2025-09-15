@@ -20,7 +20,7 @@ const allowedOrigins = [
 
 app.use(
   cors({ 
-    origin: process.env.LOCAL_FRONT_ENDPOINT,
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
