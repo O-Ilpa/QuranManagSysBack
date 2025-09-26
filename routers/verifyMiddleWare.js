@@ -5,7 +5,6 @@ const verifyMiddleWare = async (req, res, next) => {
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
       req.user = null;
-      // return res.json({success: false, message: "yo, You got no Tokens, You're aint allowed in here"})
       return next();
     }
     const token = authorizationHeader.split(" ")[1];
@@ -14,6 +13,10 @@ const verifyMiddleWare = async (req, res, next) => {
       return res.json({ success: false, message: "Unauthorized" });
     }
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    console.log(decoded)
+    if (decoded.email != "ayman@mail.com") {
+      return res.json({success:true, message: "Unauthorized"})
+    }
     if (!decoded) {
       return res.json({ success: false, message: "Unauthorized" });
     }

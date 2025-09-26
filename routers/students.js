@@ -97,7 +97,7 @@ router.put("/:id", async (req, res) => {
     res.status(500).json({ success: false, message: "Error updating user" });
   }
 });
-router.get("/:id/history", verifyMiddleWare, async (req, res) => {
+router.get("/:id/history", async (req, res) => {
   try {
     const studentId = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(studentId)) {

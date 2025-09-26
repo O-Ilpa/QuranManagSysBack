@@ -20,7 +20,7 @@ const allowedOrigins = [
 
 app.use(
   cors({ 
-    origin: allowedOrigins,
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -33,5 +33,6 @@ mongoose.connect(process.env.DATABASE_URL);
 const db =  mongoose.connection;
 db.on("error", (error) => console.error(error.name)); 
 db.once("open", () => console.log("connected to mongoose"));
-app.listen(process.env.PORT || 5000);
+app.listen(process.env.PORT)
+
   
